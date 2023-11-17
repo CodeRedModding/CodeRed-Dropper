@@ -2,7 +2,6 @@
 using System.IO;
 using Microsoft.Win32;
 using System.Diagnostics;
-using System.Collections.Generic;
 
 namespace CodeRedDropper
 {
@@ -16,8 +15,8 @@ namespace CodeRedDropper
         static bool IsValidProcess(Process process)
         {
             if (process != null
-                && process.Id > 8 // A process with an id of 8 or lower is a system process, we shouldn't be trying to access those.
-                && process.MainWindowHandle != IntPtr.Zero)
+                && (process.Id > 8) // A process with an id of 8 or lower is a system process, we shouldn't be trying to access those.
+                && (process.MainWindowHandle != IntPtr.Zero))
             {
                 return true;
             }
@@ -74,8 +73,8 @@ namespace CodeRedDropper
 
             if (Directory.Exists(tempFolder))
             {
-                string newLauncher = tempFolder + "\\CodeRedLauncher.exe";
-                string launcherPath = tempFolder + "\\LauncherPath.txt";
+                string newLauncher = (tempFolder + "\\CodeRedLauncher.exe");
+                string launcherPath = (tempFolder + "\\LauncherPath.txt");
 
                 if (File.Exists(newLauncher))
                 {
