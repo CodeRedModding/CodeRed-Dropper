@@ -43,6 +43,7 @@ namespace CodeRedDropper
             return returnList;
         }
 
+        // Launcher should already be closed by this point, so this is just for the sake of sanity checking.
         static bool CloseLauncher()
         {
             List<Process> launchers = GetFilteredProcesses("CodeRedLauncher");
@@ -60,6 +61,7 @@ namespace CodeRedDropper
                     catch (Exception ex)
                     {
                         Write("Failed to close process: " + ex.ToString());
+                        return false;
                     }
                 }
             }
@@ -84,20 +86,28 @@ namespace CodeRedDropper
 
                         if (File.Exists(oldLauncher))
                         {
-                            Write("Deleting old launcher \"" + oldLauncher + "\"...");
-                            File.Delete(oldLauncher);
-                            Write("Replacing with new launcher...");
-                            File.Move(newLauncher, oldLauncher, true);
-
-                            if (File.Exists(oldLauncher))
+                            if (CloseLauncher())
                             {
-                                Write("Successfully installed the new launcher, attempting to open...");
-                                Process.Start(new ProcessStartInfo(oldLauncher) { UseShellExecute = false });
-                                Environment.Exit(0);
+                                Write("Deleting old launcher \"" + oldLauncher + "\"...");
+                                File.Delete(oldLauncher);
+                                Write("Replacing with new launcher...");
+                                File.Move(newLauncher, oldLauncher, true);
+
+                                if (File.Exists(oldLauncher))
+                                {
+                                    Write("Successfully installed the new launcher, attempting to open...");
+                                    Process.Start(new ProcessStartInfo(oldLauncher) { UseShellExecute = false });
+                                    Environment.Exit(0);
+                                }
+                                else
+                                {
+                                    Write("Failed to overwrite old launcher with new one!");
+                                    Console.ReadKey();
+                                }
                             }
                             else
                             {
-                                Write("Failed to overwrite old launcher with new one!");
+                                Write("Failed to close the launcher, cannot overwrite with the new one!");
                                 Console.ReadKey();
                             }
                         }
