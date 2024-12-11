@@ -8,6 +8,11 @@
     <Platforms>AnyCPU;x64</Platforms>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <StartupObject>CodeRedDropper.Program</StartupObject>
+    <ApplicationIcon>Icon_Install.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Icon_Install.ico" />
+  </ItemGroup>
 
 </Project>
