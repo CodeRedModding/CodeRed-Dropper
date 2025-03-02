@@ -14,11 +14,18 @@ namespace CodeRedDropper
 
         static bool IsValidProcess(Process process)
         {
-            if (process != null
+            try
+            {
+                if (process != null
                 && (process.Id > 8) // A process with an id of 8 or lower is a system process, we shouldn't be trying to access those.
                 && (process.MainWindowHandle != IntPtr.Zero))
             {
                 return true;
+            }
+            }
+            catch (Exception ex)
+            {
+                Write("(IsValidProcess) Exception: " + ex.ToString());
             }
 
             return false;
@@ -60,7 +67,7 @@ namespace CodeRedDropper
                     }
                     catch (Exception ex)
                     {
-                        Write("Failed to close process: " + ex.ToString());
+                        Write("(CloseLauncher) Exception: " + ex.ToString());
                         return false;
                     }
                 }
@@ -89,9 +96,30 @@ namespace CodeRedDropper
                             if (CloseLauncher())
                             {
                                 Write("Deleting old launcher \"" + oldLauncher + "\"...");
-                                File.Delete(oldLauncher);
+
+                                try
+                                {
+                                     File.Delete(oldLauncher);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Write("Failed to delete old launcher, either missing permissions or being blocked by antivirus!");
+                                    Console.ReadKey();
+                                    return;
+                                }
+
                                 Write("Replacing with new launcher...");
-                                File.Move(newLauncher, oldLauncher, true);
+
+                                try
+                                {     
+                                    File.Move(newLauncher, oldLauncher, true);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Write("Failed to move extracted launcher, either missing permissions or being blocked by antivirus!");
+                                    Console.ReadKey();
+                                    return;
+                                }
 
                                 if (File.Exists(oldLauncher))
                                 {
