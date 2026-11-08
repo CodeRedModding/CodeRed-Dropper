@@ -60,7 +60,7 @@ namespace CodeRedDropper
 
                         if (!launcher.WaitForExit(5000))
                         {
-                            Write("(CloseLauncher) Failed to close launcher, timeout treshhold reached!");
+                            Write("(CloseLauncher) Failed to close launcher, timeout threshold reached!");
                             return false;
                         }
                     }
